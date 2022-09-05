@@ -1,5 +1,5 @@
 const fs = require('fs')
-
+const readline = require('readline')
 const prompt = require('prompt')
 let fileArr = []
 
@@ -14,7 +14,7 @@ const option = {
   name: 'option',
   hidden: false,
   message: `Choose an artwork to display, or:
-  
+  "c" to comment
   "q" to quit
   ------------------
   1. Black Cat
@@ -39,9 +39,22 @@ asciiArt()
 function pressEnter(input) {
   if (input.option === 'q') {
     process.exit()
+  } else if (input.option === 'c') {
+    comment()
   } else {
     loadFile(input.option)
   }
+}
+
+function comment() {
+  const rl = readline.createInterface(process.stdin, process.stdout)
+  rl.question('Please leave a comment: ', (input) => {
+    rl.close()
+    fs.appendFile('./data/saved-comment.txt', input + '\n', 'utf-8', (err) => {
+      if (err) throw err
+      console.log('Your comment has been saved')
+    })
+  })
 }
 
 function loadFile(input) {
