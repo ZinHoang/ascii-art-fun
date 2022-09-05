@@ -15,6 +15,8 @@ const option = {
   hidden: false,
   message: `Choose an artwork to display, or:
   "c" to comment
+  "d" to delete comments
+  "v" to view comments
   "q" to quit
   ------------------
   1. Black Cat
@@ -41,6 +43,10 @@ function pressEnter(input) {
     process.exit()
   } else if (input.option === 'c') {
     comment()
+  } else if (input.option === 'v') {
+    viewComment()
+  } else if (input.option === 'd') {
+    deleteComment()
   } else {
     loadFile(input.option)
   }
@@ -54,6 +60,29 @@ function comment() {
       if (err) throw err
       console.log('Your comment has been saved')
     })
+  })
+}
+
+function viewComment() {
+  fs.readFile('./data/saved-comment.txt', 'utf-8', (err, data) => {
+    if (err) throw err
+    console.log(data)
+  })
+}
+
+function deleteComment() {
+  const rl = readline.createInterface(process.stdin, process.stdout)
+
+  rl.question(`Are you sure? 'y' for Yes or 'n' for No \n`, (input) => {
+    rl.close()
+    if (input === 'y') {
+      fs.writeFile('./data/saved-comment.txt', '', (err) => {
+        if (err) throw err
+        return
+      })
+    } else {
+      return
+    }
   })
 }
 
